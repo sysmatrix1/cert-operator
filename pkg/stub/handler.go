@@ -58,7 +58,7 @@ func (h *Handler) handleRoute(route *v1.Route) error {
 		return nil
 	}
 
-	if route.ObjectMeta.Annotations[h.config.General.Annotations.Status] == "new" {
+	if route.ObjectMeta.Annotations[h.config.General.Annotations.Status] == "need" {
 		// Notfiy of certificate awaiting creation
 		logrus.Infof("Found a route waiting for a cert : %v/%v",
 			route.ObjectMeta.Namespace,
@@ -74,7 +74,7 @@ func (h *Handler) handleRoute(route *v1.Route) error {
 
 		var routeCopy *v1.Route
 		routeCopy = route.DeepCopy()
-		routeCopy.ObjectMeta.Annotations[h.config.General.Annotations.Status] = "no"
+		routeCopy.ObjectMeta.Annotations[h.config.General.Annotations.Status] = "secured"
 		routeCopy.ObjectMeta.Annotations[h.config.General.Annotations.Expiry] = keyPair.Expiry.Format(timeFormat)
 		routeCopy.Spec.TLS = &v1.TLSConfig{
 			Termination: v1.TLSTerminationEdge,
@@ -95,7 +95,7 @@ func (h *Handler) handleService(service *corev1.Service) error {
 		return nil
 	}
 
-	if service.ObjectMeta.Annotations[h.config.General.Annotations.Status] == "new" {
+	if service.ObjectMeta.Annotations[h.config.General.Annotations.Status] == "need" {
 		logrus.Infof("Found a service waiting for a cert : %v/%v",
 			service.ObjectMeta.Namespace,
 			service.ObjectMeta.Name)
@@ -142,7 +142,7 @@ func (h *Handler) handleService(service *corev1.Service) error {
 			certSec.ObjectMeta.Name)
 
 		// Update service annotations
-		svcCopy.ObjectMeta.Annotations[h.config.General.Annotations.Status] = "no"
+		svcCopy.ObjectMeta.Annotations[h.config.General.Annotations.Status] = "secured"
 		svcCopy.ObjectMeta.Annotations[h.config.General.Annotations.Expiry] = keyPair.Expiry.Format(timeFormat)
 
 		err = sdk.Update(svcCopy)
