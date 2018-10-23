@@ -40,19 +40,19 @@ type AnnotationConfig struct {
 
 const (
 	defaultConfigFile = "/etc/cert-operator/config.yml"
-	defaultProvider   = "self-signed"
+	defaultProvider   = "venafi"
 	defaultConfig     = `
   {
     "general": {
       "annotations": {
-        "status": "openshift.io/cert-ctl-status",
-        "status-reason": "openshift.io/cert-ctl-status-reason",
-        "expiry": "openshift.io/cert-ctl-expires",
-        "format": "openshift.io/cert-ctl-format"
+        "status": "openshift.io/cert-ops-status",
+        "status-reason": "openshift.io/cert-ops-status-reason",
+        "expiry": "openshift.io/cert-ops-expires",
+        "format": "openshift.io/cert-ops-format"
       }
     },
     "provider": {
-      "kind": "none"
+      "kind": "venafi"
     }
   }`
 )
